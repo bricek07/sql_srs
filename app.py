@@ -28,6 +28,14 @@ answer = """
 
 solution = db.query(answer)
 
+with st.sidebar :
+    module = st.selectbox(
+        "What would you like to review ?",
+        ("Joins", "GroupBY", "Windows functions"),
+        index = None,
+        placeholder="Select a theme ..."
+    )
+
 query = st.text_area(label="Enter your sql query")
 
 if query :
