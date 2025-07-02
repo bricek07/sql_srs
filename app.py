@@ -1,29 +1,52 @@
 import streamlit as st 
 import pandas as pd 
 import duckdb as db
+import io
 
 st.write("SQL Practice")
 
-module = st.selectbox(
-    "What would you like to review ?",
-    ("Joins", "GroupBY", "Windows functions"),
-    index = None,
-    placeholder="Select a theme ..."
-)
+csv = '''
+    beverage,price
+    orange juice,2.5
+    Expresso,2
+    Tea,3
+'''
+beverages = pd.read_csv(io.StringIO(csv))
 
-df = pd.DataFrame({
-    "event" : ["session_start", "click", "download_file", "purchase"],
-    "event_count" : [1140, 8512, 23, 12]
-})
+csv2 = '''
+    food_item,food_price
+    cookie juice,2.5
+    chocolatine,2
+    muffin,3
+'''
+food_items = pd.read_csv(io.StringIO(csv2))
+
+answer = """
+    SELECT * FROM beverages
+    CROSS JOIN food_items
+"""
+
+solution = db.query(answer)
 
 query = st.text_area(label="Enter your sql query")
-
-st.dataframe(df)
 
 if query :
     st.write(f"Vous avez entré la query : {query}")
     res = db.query(query)
     st.dataframe(res)
+
+tab2, tab3 = st.tabs(["Tables", "Solution"])
+
+with tab2:
+    st.write("table: beverages")
+    st.dataframe(beverages)
+    st.write("table: food_items")
+    st.dataframe(food_items)
+    st.write("expected:")
+    st.dataframe(solution)
+
+with tab3:
+    st.write(answer)
 
 
 
